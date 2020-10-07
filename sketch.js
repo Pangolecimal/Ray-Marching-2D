@@ -1,5 +1,5 @@
-let numBoxes = 4,
-    numCircles = 4;
+let numBoxes = 3,
+    numCircles = 3;
 
 let boxes = [numBoxes],
     circles = [numCircles];
@@ -19,8 +19,8 @@ function setup() {
     rectMode(RADIUS);
 
     showObjects = createCheckbox().size(100, 25).checked(true);
-    showContour = createCheckbox().size(100, 25);
-    maxRayDst = createSlider(0, 1000, 200, 0.1);
+    showContour = createCheckbox().size(100, 25).checked(true);
+    maxRayDst = createSlider(0, width/2, 200, 0.1);
 
     let maxRad = min(width, height) * (0.5 / (numBoxes + numCircles));
     for (let i = 0; i < numBoxes; i++) {
@@ -39,6 +39,7 @@ function setup() {
 
 function draw() {
     background(0);
+
     let mouse;
     if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
         mouse = createVector(mouseX, mouseY);
@@ -70,7 +71,9 @@ function draw() {
         stroke(204, 51);
         strokeWeight(1);
         for (let i = 0; i < points.length; i++) {
-            vertex(points[i].center.x, points[i].center.y);
+            let dir = p5.Vector.sub(points[i].center, mouse);
+            dir.limit(maxRayDst.value());
+            vertex(dir.x + mouse.x, dir.y + mouse.y);
         }
         endShape(CLOSE);
     } else {
